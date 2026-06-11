@@ -1,0 +1,36 @@
+# ============================================================
+# WHITELIST .gitignore — blocks everything by default.
+# ONLY the items explicitly un-ignored below can be committed.
+# ============================================================
+# This is a PUBLIC repository. The ONLY permitted data file is:
+#   docs/public_slim.csv — manually placed by Julia after ETL.
+# It sits in docs/ so GitHub Pages serves it to the Shinylive
+# app at runtime. The app is hard-coded to read from this one
+# location only. No other data file can ever be committed here.
+# No agent or script should ever write to this repo directly.
+# ============================================================
+
+# Block everything
+*
+
+# Allow this file
+!.gitignore
+
+# Allow the Shiny app source
+!app.R
+
+# Allow the Shinylive compiled output and its contents
+!docs/
+!docs/**
+
+# Within docs/, block all data formats...
+docs/*.parquet
+docs/*.sav
+docs/*.RData
+docs/*.rds
+docs/*.zip
+docs/*.tar.gz
+docs/*.csv
+
+# ...except the one specific file Julia drags in
+!docs/public_slim.csv
