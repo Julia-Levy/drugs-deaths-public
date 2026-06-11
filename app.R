@@ -1,17 +1,15 @@
 # =============================================================================
-# poc/app/app.R
+# drugs-deaths-public/app.R
 # -----------------------------------------------------------------------------
-# Drug-related Deaths — Public Data Explorer (POC Shiny app)
+# Drug-related Deaths — Public Data Explorer
 #
-# Run from repo root:
-#   shiny::runApp("poc/app")
+# Data is fetched at runtime from GitHub Pages (see DATA_URL below).
+# To update data: replace docs/data/public_slim.csv and push — no re-export needed.
+#
+# To run locally:
+#   shiny::runApp("drugs-deaths-public")
 #
 # Dependencies: shiny, dplyr, ggplot2, DT, jsonlite
-#   install.packages(c("shiny","dplyr","ggplot2","DT","jsonlite"))
-#
-# Shinylive note: arrow has not yet been validated in webR. If export to
-# Shinylive is needed, swap arrow::read_parquet() for nanoparquet or ship the
-# data as a compressed RDS/CSV instead.
 # =============================================================================
 
 suppressPackageStartupMessages({
@@ -22,7 +20,10 @@ suppressPackageStartupMessages({
   library(jsonlite)
 })
 
-DATA_PATH <- "public_slim.csv"
+# Data is fetched at runtime from GitHub Pages — never bundled into the app.
+# To update the data: copy a new public_slim.csv to docs/data/ and push.
+# Do NOT change this URL without updating docs/data/ accordingly.
+DATA_URL <- "https://julia-levy.github.io/drugs-deaths-public/data/public_slim.csv"
 
 # Sentinel strings that all mean "no usable value".
 # NOTE (Decision 012): these are collapsed to "Missing" for display only.
@@ -40,7 +41,7 @@ FILTER_COLS <- c("sex", "location_of_death", "primary_substance",
                  "secondary_substances", "cause_of_death")
 
 # Load once at startup and derive year from the "YYYY-MM" date_of_death string
-df_raw <- read.csv(DATA_PATH, stringsAsFactors = FALSE) |>
+df_raw <- read.csv(url(DATA_URL), stringsAsFactors = FALSE) |>
   mutate(
     death_year    = as.integer(substr(date_of_death, 1, 4)),
     age_at_death  = suppressWarnings(as.numeric(age_at_death)),
